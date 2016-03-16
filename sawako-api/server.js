@@ -1,28 +1,15 @@
 'use strict';
 var express = require('express');
-// var app = express();
-var GemologyRouter = express.Router();
+var app = express();
+var router = require('./router.js');
 
-GemologyRouter.use((req, res, next)=>{
-  console.log('Time : ' + new Date());
-  next();
-});
+// var bodyParser = require('body-parser');
 
-GemologyRouter.get('/gems', (req, res)=>{
-  res.end();
-});
+// app.use(bodyParser);
+app.use(router);
 
 
-GemologyRouter.post('/gems/:id', (req, res)=>{
-  res.end();
-});
+app.listen(3000, ()=>{
+  console.log('Port 3000 is listening..');
 
-
-GemologyRouter.put('/', (req, res)=>{
-  res.end();
-});
-
-
-GemologyRouter.delete('/', (req, res)=>{
-  res.end();
 });
