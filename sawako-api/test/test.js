@@ -13,7 +13,8 @@ describe('Testing to see if the routes are working', ()=>{
     .get('/gems')
     .end((err, res)=>{
       expect(err).to.be.null;
-      expect(res).to.have.an('object');
+      expect(res.body).to.have.an('object');
+      expect(res.body).
       done();
     });
   });

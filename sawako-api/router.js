@@ -37,7 +37,6 @@ GemologyRouter.get('/gems/:id', (req, res)=>{
   // console.log('ID : ' + req.params.id);
   Gem.find({'_id': req.params.id}, (err, gem)=>{
     res.json({_id: gem});
-    console.log('inside of :id gem : ' + gem);
     res.end();
   });
 });
@@ -54,7 +53,10 @@ GemologyRouter.post('/gems', (req, res)=>{
 
 
 GemologyRouter.put('/gems/:id', (req, res)=>{
-  res.end();
+  Gem.findById(req.params.id, req.body, (err, gem)=>{
+    res.json({_id: gem});
+    res.end();
+  });
 });
 
 
