@@ -6,4 +6,5 @@ const GemsSchema = new mongoose.Schema({
   density: {min: Number, max: Number}
 });
 
-module.exports = mongoose.model('Gem', GemsSchema);
+let Gem = mongoose.model('Gem', GemsSchema);
+module.exports = Gem;

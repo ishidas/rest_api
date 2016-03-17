@@ -2,11 +2,8 @@
 var express = require('express');
 var GemologyRouter = express.Router();
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
 var Gem = require('./models/gem_model');
 
-let DB_PORT = process.env.MONGOLAB_URI || 'mongodb://localhost/db';
-mongoose.connect(DB_PORT);
 
 GemologyRouter.use(bodyParser.json());
 
@@ -65,8 +62,8 @@ GemologyRouter.delete('/gems/:id', (req, res)=>{
   var query = {_id: req.params.id };
   Gem.remove(query, ()=>{
     console.log('id : ' + req.params.id + ' is removed.');
+    res.end();
   });
-  res.end();
 });
 
 module.exports = GemologyRouter;
