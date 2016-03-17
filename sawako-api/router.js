@@ -1,6 +1,5 @@
 'use strict';
 var express = require('express');
-// var app = express();
 var GemologyRouter = express.Router();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -36,7 +35,8 @@ GemologyRouter.get('/gems', (req, res)=>{
 GemologyRouter.get('/gems/:id', (req, res)=>{
   // console.log('ID : ' + req.params.id);
   Gem.find({'_id': req.params.id}, (err, gem)=>{
-    res.json({_id: gem});
+    res.json(gem);
+    console.log(gem._id);
     res.end();
   });
 });
@@ -53,7 +53,8 @@ GemologyRouter.post('/gems', (req, res)=>{
 
 
 GemologyRouter.put('/gems/:id', (req, res)=>{
-  Gem.findById(req.params.id, req.body, (err, gem)=>{
+  var query = {_id: req.params.id };
+  Gem.update(query, req.body, (err, gem)=>{
     res.json({_id: gem});
     res.end();
   });
@@ -61,6 +62,10 @@ GemologyRouter.put('/gems/:id', (req, res)=>{
 
 
 GemologyRouter.delete('/gems/:id', (req, res)=>{
+  var query = {_id: req.params.id };
+  Gem.remove(query, ()=>{
+    console.log('id : ' + req.params.id + ' is removed.');
+  });
   res.end();
 });
 
