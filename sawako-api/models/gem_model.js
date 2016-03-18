@@ -1,9 +1,14 @@
 'use strict';
 const mongoose = require('mongoose');
-const GemsSchema = new mongoose.Schema({
+const GemsSchema = mongoose.Schema({
   name: String,
   color: String,
-  density: {min: Number, max: Number}
+  density: Number,
+  continent:
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'continent'
+  }
 });
 
 let Gem = mongoose.model('Gem', GemsSchema);

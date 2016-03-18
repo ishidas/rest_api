@@ -1,7 +1,12 @@
 'use strict';
 const mongoose = require('mongoose');
-const ContinentSchema = new mongoose.Schema({
+const ContinentSchema = mongoose.Schema({
   country: String,
+  gems:
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Gem'
+  },
   region: String,
   mineral: String
 });
