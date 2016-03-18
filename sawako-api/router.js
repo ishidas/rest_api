@@ -33,7 +33,19 @@ GemologyRouter.get('/gems/:id', (req, res)=>{
   // console.log('ID : ' + req.params.id);
   Gem.find({'_id': req.params.id}, (err, gem)=>{
     res.json(gem);
-    console.log(gem._id);
+    // console.log(gem._id);
+    res.end();
+  });
+});
+
+//**************************
+//querying density Number
+//**************************
+GemologyRouter.get('/density/', (req, res)=>{
+  var num = JSON.parse(req.query.density);
+  console.log(num);
+  Gem.find({'density': {$lte: num }}, (err, gem)=>{
+    res.json(gem);
     res.end();
   });
 });

@@ -7,7 +7,7 @@ const GemsSchema = mongoose.Schema({
   continent:
   {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'continent'
+    ref: 'Continent'
   }
 });
 

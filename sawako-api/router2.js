@@ -24,6 +24,17 @@ ContinentRouter.get('/continents/:id', (req, res)=>{
   });
 });
 
+//*****************************************
+//populating gem data inside of continent
+//*****************************************
+ContinentRouter.get('/populate/:id', (req, res)=>{
+  var query = {_id: req.params.id};
+  Continent.find(query).populate('gems').exec((err, continent)=>{
+    console.log('Here is continent populated : ' + continent);
+    res.end();
+  });
+});
+
 ContinentRouter.post('/continents', (req, res)=>{
   var newContinent = new Continent(req.body);
   newContinent.save((err, continent)=>{
@@ -47,5 +58,6 @@ ContinentRouter.delete('/continents/:id', (req, res)=>{
     res.end();
   });
 });
+
 
 module.exports = ContinentRouter;
