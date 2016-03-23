@@ -12,10 +12,9 @@ module.exports = (router, User)=>{
     let newUser = new User({name: name, password: password});
     newUser.save((err, data)=>{
       if(err){
-        console.log('Not saved : ' + err);
-        return;
+        return res.json({msg: 'Not saved : ' + err});
       }
-      console.log('New user saved! : ' + data);  
+      console.log('New user saved! : ' + data);
       res.json(data);
     });
   });

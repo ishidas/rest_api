@@ -10,7 +10,7 @@ module.exports = (router, User)=>{
     console.log('name is : ' + name, 'password is : ' + password, 'method is : ' + method);
 
     User.findOne({name : name}, (err, user)=>{
-      console.log(user);
+      console.log('Here is user :' + user);
       let valid = user.compareHash(password);
       if(!valid){
         return res.json({status: 'failure!'});
