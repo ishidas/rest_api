@@ -31,7 +31,7 @@ GemologyRouter.get('/gems', (req, res)=>{
 
 GemologyRouter.get('/gems/:id', (req, res)=>{
   // console.log('ID : ' + req.params.id);
-  Gem.find({'_id': req.params.id}, (err, gem)=>{
+  Gem.findById(req.params.id, (err, gem)=>{
     res.json(gem);
     // console.log(gem._id);
     res.end();
