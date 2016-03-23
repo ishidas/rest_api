@@ -1,12 +1,8 @@
 'use strict';
-// var express = require('express');
-// var bodyParser = require('body-parser');
-// var Continent = require('./models/continent_model');
 
 module.exports = (ContRouter, Continent, User)=>{
 
-// ContRouter.use(bodyParser.json());
-  ContRouter.get('/continents', (req, res)=>{
+  ContRouter.get('/continents' , (req, res)=>{
     Continent.find({}, (err, continent)=>{
       console.log('Here is /continent : ' + continent);
       res.json({id: continent});

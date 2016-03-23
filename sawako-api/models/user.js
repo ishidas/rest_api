@@ -1,10 +1,20 @@
 'use strict';
 let mongoose = require('mongoose');
 let bcrypt = require('bcrypt');
-
+let jwt = require('jsonwebtoken');
 let userSchema = mongoose.Schema({
-  name: String,
-  password: String
+  name: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  token:
+  {
+    type: String
+  }
 });
 
 userSchema.pre('save', function(next){
@@ -14,6 +24,10 @@ userSchema.pre('save', function(next){
 
 userSchema.methods.compareHash = function (password){
   return bcrypt.compareSync(password, this.password);
+};
+
+userSchema.methods.generateToken = function (){
+  return jwt.sign({_id: this._id}, 'FLUFFBALL');
 };
 
 let User = mongoose.model('User', userSchema);
