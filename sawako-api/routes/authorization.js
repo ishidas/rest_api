@@ -20,6 +20,6 @@ module.exports = (req, res, next)=>{
     }
     req.user = user;
     console.log(JSON.stringify(req.user));
-    // next();
+    next();
   });
 };

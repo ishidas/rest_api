@@ -1,9 +1,8 @@
 'use strict';
 
 module.exports = (ContRouter, Continent, User, auth)=>{
-  
-  ContRouter.get('/continents' , auth, (req, res)=>{
 
+  ContRouter.get('/continents' , auth, (req, res)=>{
     Continent.find({}, (err, continent)=>{
       console.log('Here is /continent : ' + continent);
       res.json({id: continent});
@@ -11,7 +10,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
     });
   });
 
-  ContRouter.get('/continents/:id', (req, res)=>{
+  ContRouter.get('/continents/:id',auth, (req, res)=>{
     var query = {_id: req.params.id};
     Continent.find(query, (err, continent)=>{
       console.log('Here is /continent : ' + continent);
@@ -23,7 +22,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
   //*****************************************
   //populating gem data inside of continent
   //*****************************************
-  ContRouter.get('/populate/:id', (req, res)=>{
+  ContRouter.get('/populate/:id', auth,(req, res)=>{
     var query = {_id: req.params.id};
     Continent.find(query).populate('gems').exec((err, continent)=>{
       console.log('Here is continent populated : ' + continent);
@@ -31,7 +30,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
     });
   });
 
-  ContRouter.post('/continents', (req, res)=>{
+  ContRouter.post('/continents',auth, (req, res)=>{
     var newContinent = new Continent(req.body);
     newContinent.save((err, continent)=>{
       res.json(continent);
@@ -39,7 +38,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
     });
   });
 
-  ContRouter.put('/continents/:id', (req, res)=>{
+  ContRouter.put('/continents/:id',auth, (req, res)=>{
     var query = { _id: req.params.id};
     Continent.update(query, req.body, (err, continent)=>{
       res.json({_id: continent});
@@ -47,7 +46,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
     });
   });
 
-  ContRouter.delete('/continents/:id', (req, res)=>{
+  ContRouter.delete('/continents/:id', auth,(req, res)=>{
     var query = {_id: req.params.id};
     Continent.remove(query, (err)=>{
       console.log('This is hit : ' + err);
@@ -56,4 +55,3 @@ module.exports = (ContRouter, Continent, User, auth)=>{
   });
 
 };
-// module.exports = ContRouter;
