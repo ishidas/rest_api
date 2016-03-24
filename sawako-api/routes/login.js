@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = (router, User)=>{
   router.post('/login', (req, res)=>{
     let authorizationArray = req.headers.authorization.split(' ');

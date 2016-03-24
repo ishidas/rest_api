@@ -1,7 +1,7 @@
 'use strict';
 var express = require('express');
 var app = express();
-// var GemRouter = require('./gemRouter');
+var Gem = require('./models/gem_model');
 var Continent = require('./models/continent_model');
 var bodyParser = require('body-parser');
 let router = express.Router();
@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(router);
 
 require('./routes/contRouter')(router,Continent,User,auth);
+require('./routes/gemRouter')(router,Gem ,User ,auth);
 require('./routes/register')(router, User);
 require('./routes/login')(router, User);
 // app.use(GemRouter);

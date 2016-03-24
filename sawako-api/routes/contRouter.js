@@ -2,7 +2,7 @@
 
 module.exports = (ContRouter, Continent, User, auth)=>{
 
-  ContRouter.get('/continents' , auth, (req, res)=>{
+  ContRouter.get('/continents', auth, (req, res)=>{
     Continent.find({}, (err, continent)=>{
       console.log('Here is /continent : ' + continent);
       res.json({id: continent});
