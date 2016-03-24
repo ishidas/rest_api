@@ -10,7 +10,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
 
   ContRouter.get('/continents/:id',auth, (req, res)=>{
     var query = {_id: req.params.id};
-    Continent.find(query, (err, continent)=>{
+    Continent.findOne(query, (err, continent)=>{
       res.json({id: continent});
     });
   });
@@ -20,9 +20,8 @@ module.exports = (ContRouter, Continent, User, auth)=>{
   //*****************************************
   ContRouter.get('/populate/:id', auth,(req, res)=>{
     var query = {_id: req.params.id};
-    Continent.find(query).populate('gems').exec((err, continent)=>{
-      console.log('Here is continent populated : ' + continent);
-      res.end();
+    Continent.findOne(query).populate('gems').exec((err, continent)=>{
+      res.json({id: continent});
     });
   });
 
@@ -37,7 +36,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
   ContRouter.put('/continents/:id',auth, (req, res)=>{
     var query = { _id: req.params.id};
     Continent.update(query, req.body, (err, continent)=>{
-      res.json({_id: continent});
+      res.json({id: continent});
       res.end();
     });
   });
@@ -46,7 +45,7 @@ module.exports = (ContRouter, Continent, User, auth)=>{
     var query = {_id: req.params.id};
     Continent.remove(query, (err)=>{
       console.log('This is hit : ' + err);
-      res.end();
+      res.json({msg: 'requested continent has been removed.'});
     });
   });
 

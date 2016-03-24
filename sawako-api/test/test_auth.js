@@ -8,8 +8,11 @@ let expect = chai.expect;
 let mongoose = require('mongoose');
 process.env.MONGOLAB_URI = 'mongodb://localhost/test';
 let Continent = require('./../models/continent_model');
+let Gem = require('./../models/gem_model');
 require('./../server');
 var token = '';
+var id;
+var idGem;
 
 describe('/register route integration test', function (){
 
@@ -28,7 +31,6 @@ describe('/register route integration test', function (){
 });
 
 describe('authentication /login rout integration test', function (){
-
   it('should send back a string of token', function(done){
     request('localhost:3000')
     .post('/login')
@@ -45,16 +47,22 @@ describe('authentication /login rout integration test', function (){
 });
 
 describe('routes should pass auth middleware and autherize it via rsc routes', function(){
-  var id;
-
   before((done)=>{
     var newContinent = new Continent({country: 'Japan', region: 'Osaka'});
-    newContinent.save((err, gem)=>{
+    var newGem = new Gem({name: 'Ruby', color: 'red'});
+    newContinent.save(function(err, continent){
       if(err){
-        return console.log('Here is test post error : ' + err);
+        return console.log('Here is test post CONTINENT error : ' + err);
       }
-      id = gem._id;
-      console.log('newContinent : ' + gem);
+      id = continent._id;
+      console.log('newContinent : ' + continent);
+    });
+    newGem.save(function(err, gem){
+      if(err){
+        return console.log('Here is test post GEM error : ' + err);
+      }
+      idGem = gem._id;
+      console.log('newGem : ' + gem);
       done();
     });
   });
@@ -98,10 +106,58 @@ describe('routes should pass auth middleware and autherize it via rsc routes', f
     .get('/continents/' + id)
     .set({'token': token})
     .end((err, res)=>{
-      debugger;
       expect(res).to.be.an('object');
       expect(res.body).to.have.property('id');
-
+      done();
+    });
+  });
+  it('should grab only one data that is being specified by end point', function(done){
+    request('localhost:3000')
+    .put('/continents/' + id)
+    .set({'token': token})
+    .send({gems: idGem})
+    .end((err, res)=>{
+      expect(res).to.be.an('object');
+      Continent.findOne({_id: id}, function(err, continent){
+        expect(continent).to.have.property('id');
+        expect(continent).to.have.property('gems');
+        done();
+      });
+    });
+  });
+  it('should grab only one continent data and populate gems field', function(done){
+    request('localhost:3000')
+    .get('/populate/' + id)
+    .set({'token': token})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res.body).to.be.an('object');
+      expect(res.body).to.have.property('id');
+      expect(res.body.id.gems).to.have.property('color');
+      done();
+    });
+  });
+  it('should grab only one continent data and populate gems field', function(done){
+    request('localhost:3000')
+    .post('/continents')
+    .set({'token': token})
+    .send({country: 'Korea', region: 'Seoul'})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res.body).to.be.an('object');
+      expect(res.body).to.have.property('country');
+      expect(res.body).to.have.property('region');
+      done();
+    });
+  });
+  it('should grab only one continent data and remove it from db', function(done){
+    request('localhost:3000')
+    .delete('/continents/' + id)
+    .set({'token': token})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res.body).to.be.an('object');
+      expect(res.body._id).to.be.undefined;
       done();
     });
   });
