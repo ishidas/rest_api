@@ -13,17 +13,33 @@ var expect = chai.expect;
 var Gem = require(__dirname + '/../models/gem_model');
 
 
-describe('Testing to see if the routes are working', ()=>{
+describe('Integration Testing, to see if the Gems routes are working', ()=>{
   var id;
-  beforeEach((done)=>{
-    var newGem = new Gem({name: 'Sapphire'});
+  before((done)=>{
+    request('localhost:3000')
+    .post('/register')
+    .auth('user', 'password')
+    .end(done());
+  });
+  before((done)=>{
+    request('localhost:3000')
+    .post('/login')
+    .auth('user', 'password')
+    .end(done());
+  });
+  before((done)=>{
+    var newGem = new Gem({name: 'Sapphire', color: 'blue'});
     newGem.save((err, gem)=>{
-      console.log('It\'s hitting post route' + gem);
+      if(err){
+        return console.log('Here is test post error : ' + err);
+      }
       id = gem._id;
+      console.log('newgem : ' + gem);
       done();
     });
   });
   after((done)=>{
+    console.log('hitting dropDatabase');
     mongoose.connection.db.dropDatabase(()=>{
       done();
     });
@@ -32,9 +48,12 @@ describe('Testing to see if the routes are working', ()=>{
   it('should take /gems as route',(done)=>{
     request('localhost:3000')
     .get('/gems')
+    .send({token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmY0MDc1ZWJhOTcwYzFlMGVkNTMzNTYiLCJpYXQiOjE0NTg4MzM1NzN9.c8O_-Cx5eI-uwnwLGDviPiyjoK4JMa1GXtaHBAj-KhI'})
     .end((err, res)=>{
-      expect(err).to.eql(null);
+      expect(err).to.be.null;
       expect(res.body).to.be.an('object');
+      expect(res.body).to.have.property('_id');
+      expect(res.body).to.have.property('name');
       done();
     });
   });
@@ -43,9 +62,12 @@ describe('Testing to see if the routes are working', ()=>{
     console.log('is this test hitting?');
     request('localhost:3000')
     .get('/gems/' + id)
+    .send({token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmY0MDc1ZWJhOTcwYzFlMGVkNTMzNTYiLCJpYXQiOjE0NTg4MzM1NzN9.c8O_-Cx5eI-uwnwLGDviPiyjoK4JMa1GXtaHBAj-KhI'})
     .end((err, res)=>{
-      expect(err).to.eql(null);
+      expect(err).to.be.null;
       expect(res.body).to.have.an('object');
+      expect(res.body).to.have.property('_id');
+      expect(res.body._id).to.eql('_id:'+ id);
       done();
     });
   });

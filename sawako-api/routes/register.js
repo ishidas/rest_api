@@ -8,13 +8,11 @@ module.exports = (router, User)=>{
     let authArray = new Buffer(base64ed, 'base64').toString().split(':');
     let name = authArray[0];
     let password = authArray[1];
-    console.log('name is : ' + name, 'password is : ' + password, 'method is : ' + method);
     let newUser = new User({name: name, password: password});
     newUser.save((err, data)=>{
       if(err){
         return res.json({msg: 'Not saved : ' + err});
       }
-      console.log('New user saved! : ' + data);
       res.json(data);
     });
   });

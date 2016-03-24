@@ -10,26 +10,23 @@ module.exports = (GemRouter ,Gem ,User ,auth)=>{
 
   GemRouter.use((req, res, next)=>{
     console.log('Time : ' + new Date());
+    // res.json(new Date());
     next();
   });
 
   GemRouter.get('/gems',auth , (req, res)=>{
     Gem.find({}, (err,gem)=>{
       if(err){
-        console.log(err);
+        res.json({msg: 'Oops, there is an error.' + err});
       }
       console.log('Here is gem in get : ' + gem);
       res.json({data: gem});
-      res.end();
     });
   });
 
   GemRouter.get('/gems/:id',auth, (req, res)=>{
-    // console.log('ID : ' + req.params.id);
     Gem.findById(req.params.id, (err, gem)=>{
       res.json(gem);
-      // console.log(gem._id);
-      res.end();
     });
   });
 
