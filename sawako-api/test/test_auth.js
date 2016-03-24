@@ -28,6 +28,15 @@ describe('/register route integration test', function (){
       done();
     });
   });
+  it('should spit back an error when try to save the existing user and pass',function(done){
+    request('localhost:3000')
+    .post('/register')
+    .auth('newunser', 'pass123')
+    .end(function(err, res){
+      expect(res).to.have.status(418);
+      done();
+    });
+  });
 });
 
 describe('authentication /login rout integration test', function (){
@@ -49,7 +58,7 @@ describe('authentication /login rout integration test', function (){
 describe('routes should pass auth middleware and autherize it via rsc routes', function(){
   before((done)=>{
     var newContinent = new Continent({country: 'Japan', region: 'Osaka'});
-    var newGem = new Gem({name: 'Ruby', color: 'red'});
+    var newGem = new Gem({name: 'Ruby', color: 'red', density: 4});
     newContinent.save(function(err, continent){
       if(err){
         return console.log('Here is test post CONTINENT error : ' + err);
@@ -84,7 +93,7 @@ describe('routes should pass auth middleware and autherize it via rsc routes', f
   it('should get all continents data when GET /continents is hit', function(done){
     request('localhost:3000')
     .get('/continents')
-    .send({token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NmYzNzg1NzIyYThhYzM2MDkyNWM5MmYiLCJpYXQiOjE0NTg3OTY2NTB9.Y5lMys0SG5TrXirWivD7ALLWDf3R_VnTwfo5UV-f4-I'})
+    .send({token: token})
     .end((err, res)=>{
       it('should get 401 status back if decoded a token that is not part of this db', function(done){
         request('localhost:3000')
@@ -111,7 +120,7 @@ describe('routes should pass auth middleware and autherize it via rsc routes', f
       done();
     });
   });
-  it('should grab only one data that is being specified by end point', function(done){
+  it('should grab one continent and PUT gem id', function(done){
     request('localhost:3000')
     .put('/continents/' + id)
     .set({'token': token})
@@ -137,7 +146,7 @@ describe('routes should pass auth middleware and autherize it via rsc routes', f
       done();
     });
   });
-  it('should grab only one continent data and populate gems field', function(done){
+  it('should POST a new continent data', function(done){
     request('localhost:3000')
     .post('/continents')
     .set({'token': token})
@@ -158,6 +167,80 @@ describe('routes should pass auth middleware and autherize it via rsc routes', f
       expect(err).to.be.null;
       expect(res.body).to.be.an('object');
       expect(res.body._id).to.be.undefined;
+      done();
+    });
+  });
+  it('should grab all gems data', function(done){
+    request('localhost:3000')
+    .get('/gems')
+    .set({'token': token})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res).to.be.an('object');
+      expect(res.body).to.be.an('array');
+      done();
+    });
+  });
+  it('should get gem by id', function(done){
+    request('localhost:3000')
+    .get('/gems/' + idGem)
+    .set({'token': token})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res).to.be.an('object');
+      expect(res.body).to.have.property('name','Ruby');
+      done();
+    });
+  });
+  it('should get only a density data less than the user specified num', function(done){
+    request('localhost:3000')
+    .get('/density/')
+    .query({density: 5})
+    .set({'token': token})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res).to.be.an('object');
+      expect(res.body).to.be.an('array');
+      expect(res.body[0]).to.have.property('density', 4);
+      done();
+    });
+  });
+  it('should POST a new Gem data', function(done){
+    request('localhost:3000')
+    .post('/gems')
+    .set({'token': token})
+    .send({name: 'Diamond', color: 'transparent', density: 5})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res.body).to.be.an('object');
+      expect(res.body).to.have.property('name');
+      expect(res.body).to.have.property('color', 'transparent');
+      done();
+    });
+  });
+  it('should grab one Gem and PUT a new gem data', function(done){
+    request('localhost:3000')
+    .put('/gems/' + idGem)
+    .set({'token': token})
+    .send({color: 'various red'})
+    .end((err, res)=>{
+      expect(res).to.be.an('object');
+      Gem.findOne({_id: idGem}, function(err, gem){
+        expect(gem).to.have.property('id');
+        expect(gem).to.have.property('name', 'Ruby');
+        expect(gem).to.have.property('color', 'various red');
+        done();
+      });
+    });
+  });
+  it('should grab only one Gem data and remove it from db', function(done){
+    request('localhost:3000')
+    .delete('/gems/' + idGem)
+    .set({'token': token})
+    .end((err, res)=>{
+      expect(err).to.be.null;
+      expect(res.body).to.be.an('object');
+      expect(res.body).to.have.property('msg');
       done();
     });
   });
